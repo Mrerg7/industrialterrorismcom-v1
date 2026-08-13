@@ -1,0 +1,148 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const incidents = (await getCollection('incidents')).sort((a, b) => a.data.order - b.data.order);
+const stats = await getCollection('stats');
+
+const usIncidents = incidents.filter((item) => item.data.category === 'us');
+const worldwideIncidents = incidents.filter((item) => item.data.category !== 'us');
+
+const categoryLabel: Record<string, string> = {
+  us: 'United States',
+  islamist: 'Islamist',
+  'far-right': 'Far-right',
+  conflict: 'Conflict',
+};
+---
+
+<BaseLayout
+  title="Industrial Terrorism"
+  description="Documented attacks on mosques and Islamic centers in the United States and worldwide — incidents, scale, and publicly sourced context."
+>
+  <Header />
+
+  <main id="main-content" class="flex-1">
+    <section class="relative overflow-hidden border-b border-brand-800">
+      <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(185,28,28,0.18),_transparent_55%)]"></div>
+      <div class="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent-light/90">
+          Informational brief
+        </p>
+        <h1 class="mt-4 max-w-3xl font-display text-4xl font-bold tracking-tight text-brand-50 sm:text-5xl lg:text-6xl">
+          Documented violence against mosques and Islamic centers
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-brand-300">
+          A concise public record of selected incidents, U.S. hate-crime statistics, and global attacks
+          used as reference points for religious-site security, extremism research, and infrastructure risk.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a
+            href="#united-states"
+            class="inline-flex items-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-light"
+          >
+            United States cases
+          </a>
+          <a
+            href="#worldwide"
+            class="inline-flex items-center rounded-lg border border-brand-700 bg-brand-900/60 px-5 py-2.5 text-sm font-semibold text-brand-100 transition hover:border-brand-500 hover:bg-brand-800"
+          >
+            Worldwide
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="united-states" class="border-b border-brand-800">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent-light/90">United States</p>
+        <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-brand-50">
+          Attacks on U.S. mosques
+        </h2>
+        <p class="mt-4 max-w-3xl text-base leading-relaxed text-brand-300">
+          Lethal attacks at U.S. mosques remain uncommon relative to global conflict zones, but ideologically
+          motivated arson, bombs, and shootings are documented. The cases below are drawn from public reporting.
+        </p>
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+          {usIncidents.map((item) => (
+            <article class="rounded-xl border border-brand-800 bg-brand-900/40 p-6">
+              <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-brand-400">
+                <span class="rounded-full bg-accent/15 px-2.5 py-0.5 text-accent-light ring-1 ring-accent/30">
+                  {categoryLabel[item.data.category]}
+                </span>
+                <span>{item.data.year}</span>
+                <span aria-hidden="true">·</span>
+                <span>{item.data.location}</span>
+              </div>
+              <h3 class="mt-4 text-xl font-semibold text-brand-50">{item.data.title}</h3>
+              {item.data.casualties && (
+                <p class="mt-2 text-sm font-medium text-accent-light">{item.data.casualties}</p>
+              )}
+              <p class="mt-3 text-sm leading-relaxed text-brand-300">{item.data.summary}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="worldwide" class="border-b border-brand-800">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent-light/90">Worldwide</p>
+        <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-brand-50">
+          Global reference incidents
+        </h2>
+        <p class="mt-4 max-w-3xl text-base leading-relaxed text-brand-300">
+          Mass-casualty attacks on mosques have been carried out by far-right and Islamist actors. These
+          events are frequently cited in security planning for places of worship.
+        </p>
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+          {worldwideIncidents.map((item) => (
+            <article class="rounded-xl border border-brand-800 bg-brand-900/40 p-6">
+              <div class="flex flex-wrap items-center gap-2 text-xs font-medium text-brand-400">
+                <span class="rounded-full bg-accent/15 px-2.5 py-0.5 text-accent-light ring-1 ring-accent/30">
+                  {categoryLabel[item.data.category]}
+                </span>
+                <span>{item.data.year}</span>
+                <span aria-hidden="true">·</span>
+                <span>{item.data.location}</span>
+              </div>
+              <h3 class="mt-4 text-xl font-semibold text-brand-50">{item.data.title}</h3>
+              {item.data.casualties && (
+                <p class="mt-2 text-sm font-medium text-accent-light">{item.data.casualties}</p>
+              )}
+              <p class="mt-3 text-sm leading-relaxed text-brand-300">{item.data.summary}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="context" class="border-b border-brand-800">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent-light/90">Scale &amp; Context</p>
+        <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-brand-50">
+          Publicly sourced U.S. figures
+        </h2>
+        <p class="mt-4 max-w-3xl text-base leading-relaxed text-brand-300">
+          Statistics below are summaries of published datasets. They are presented for orientation, not as
+          legal findings or a complete census of every incident.
+        </p>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2">
+          {stats.map((item) => (
+            <article class="rounded-xl border border-brand-800 bg-gradient-to-b from-brand-900/50 to-brand-950 p-6">
+              <p class="text-sm font-medium uppercase tracking-wider text-brand-400">{item.data.label}</p>
+              <p class="mt-3 text-2xl font-semibold tracking-tight text-brand-50">{item.data.value}</p>
+              {item.data.source && (
+                <p class="mt-3 text-xs text-brand-500">Source: {item.data.source}</p>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
