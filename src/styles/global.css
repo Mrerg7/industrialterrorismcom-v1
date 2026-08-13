@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-brand-950 text-brand-100;
+  }
+}
+
+/* Smooth scroll offset for sticky header */
+section[id] {
+  scroll-margin-top: 5rem;
+}
